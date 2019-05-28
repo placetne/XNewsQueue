@@ -174,7 +174,6 @@ namespace xnewsqueue
 					continue;
 				}
                 var c = new List<Article>();
-                string input = node.SelectSingleNode("@subject").Value;
                 DateTime time = new DateTime(0x7b2, 1, 1, 0, 0, 0, 0);
                 time = time.AddSeconds(double.Parse(node.SelectSingleNode("@date").Value));
                 string str3 = node.SelectSingleNode("@poster").Value;
@@ -185,7 +184,13 @@ namespace xnewsqueue
                     strArray[index] = node2.InnerText;
                     index++;
                 }
-                foreach (XmlNode node3 in node.SelectNodes("segments/segment"))
+
+                var segments = node.SelectNodes("segments/segment");
+
+                var subject = node.SelectSingleNode("@subject").Value;
+                var input = Regex.IsMatch(subject, @"\(\d+\/\d+\)") ? subject : subject.TrimEnd() + " (1/" + subject.Count() + ")";
+
+                foreach (XmlNode node3 in segments)
                 {
 					int.Parse(node3.SelectSingleNode("@number").Value);
                     int num2 = int.Parse(node3.SelectSingleNode("@bytes").Value);
